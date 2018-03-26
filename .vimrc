@@ -5,10 +5,14 @@
 "-------------------------------------------------------------------------------
 set nocompatible				" be iMproved, required
 
-" Leader
-let mapleader = " "
-let localleader = "//"
+" Leader Mappings
+"let mapleader = " "
+"let localleader = "//"
 
+map <Space> <leader>
+map <Leader>w :update<CR>
+map <Leader>q :qall<CR>
+map <Leader>gs :Gstatus<CR>
 
 "-------------------------------------------------------------------------------
 " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
@@ -48,11 +52,14 @@ call plug#begin('~/.vim/bundle')
 	"Plug 'tacahiroy/ctrlp-funky'
 	Plug 'SirVer/ultisnips'
 	Plug 'junegunn/vim-easy-align'
-	Plug 'tpope/vim-repeat'
+"	Plug 'tpope/vim-repeat'
+"    Plug 'tpope/vim-unimpaired'
 	"Plug 'mileszs/ack.vim'
 	Plug 'mbbill/undotree'
 	Plug 'tomasr/molokai'
 "	Plug 'kien/ctrlp.vim'
+	Plug 'elzr/vim-json'
+    Plug 'matze/vim-move' 
 	
 	" Git
 	"Plug 'tpope/vim-fugitive'
@@ -61,62 +68,91 @@ call plug#begin('~/.vim/bundle')
 call plug#end()
 
 "-------------------------------------------------------------------------------
-" Setup build shortcuts
+" UTF-8 encoding
 "-------------------------------------------------------------------------------
-
-compiler msvc
-set makeprg=nmake
-noremap <F5> :<C-U>make<CR>
+set encoding=utf-8
+set fenc=utf-8
+set termencoding=utf-8
+"scriptencoding utf-8
 
 "-------------------------------------------------------------------------------
-" Highlighing and colour
+" Colors & Formatting
 "-------------------------------------------------------------------------------
-set background=dark
-set t_Co=256					" Enable 256 colour support
-let g:molokai_original = 1
-colors molokai
-
 
 syntax on
 
+set background=dark
+set t_Co=256					" Enable 256 colour support
+
+let g:molokai_original = 1
+colors molokai
+
 set colorcolumn=80				" Draw column marker"
 highlight ColorColumn ctermbg=darkgray
+
+set lines=80 columns=100		" Set page size
+
+"set listchars=extends:→         " Show arrow if line continues rightwards
+"set listchars+=precedes:←       " Show arrow if line continues leftwards
+
+"set guifont=Fixedsys:h9:cANSI:qDRAFT	" Default font
+"set guifont=OpenDyslexicMono:h9		" Dyslexic font
 
 "-------------------------------------------------------------------------------
 " Interface
 "-------------------------------------------------------------------------------
 set number						" Enable line numbering
 set showcmd						" Display incomplete commands
+set wildmenu					" Command mode <tab> auto completion
+set laststatus=2                " Show status line on startup
+set autoread                    " Auto reload changed files
 
-"set scrolloff=5                " Leave 5 lines of buffer when scrolling
-"set sidescrolloff=10  " Leave 10 characters of horizontal buffer when scrolling
+set clipboard=unnamed			" Use system clipboard
+"set clipboard=unnamedplus      " X-Windows clipboard
 
-set clipboard=unnamed				" Use system clipboard
-"set clipboard=unnamedplus          " X-Windows clipboard
-set mouse=a
-set noerrorbells novisualbell		" Turn off visual and audible bells
+set ruler						" Always show cursor position
+set noerrorbells novisualbell	" Turn off visual and audible bells
 
+set guioptions-=L	            " Fix windows aero snap by disabling left scollbar
+set splitright                  " Open new splits to the right
+set splitbelow                  " Open new splits to the bottom
+
+set nowrap                      " Don't wrap lines at page boundary
+set backspace=2                 " set backspace=indent,eol,start
+set history=500                 " Keep last n commands in history
+set showmatch					" Highlight matching braces
+
+"set lazyredraw                  " Reduce the redraw frequency
+set ttyfast                     " Send more characters in fast terminals
+set showtabline=2
+set scrolloff=5                 " Leave 5 lines of buffer when scrolling
+"set sidescrolloff=10            " Leave 10 characters of horizontal buffer when scrolling
+
+"-------------------------------------------------------------------------------
+" Mouse
+"-------------------------------------------------------------------------------
+set mouse=a                     " Enable mouse in all modes
+
+":nmap <ScrollWheelUp> <nop>
+":nmap <S-ScrollWheelUp> <nop>
+":nmap <C-ScrollWheelUp> <nop>
+":nmap <ScrollWheelDown> <nop>
+":nmap <S-ScrollWheelDown> <nop>
+":nmap <C-ScrollWheelDown> <nop>
+:nmap <ScrollWheelLeft> <nop>
+:nmap <S-ScrollWheelLeft> <nop>
+:nmap <C-ScrollWheelLeft> <nop>
+:nmap <ScrollWheelRight> <nop>
+:nmap <S-ScrollWheelRight> <nop>
+:nmap <C-ScrollWheelRight> <nop>
 
 "-------------------------------------------------------------------------------
 " Search
 "-------------------------------------------------------------------------------
-set incsearch					" enable incremental searching
-set ignorecase					" case insensitive
-set smartcase					" use case if any caps used in search
-set hlsearch					" enable search highlighting
-
-"-------------------------------------------------------------------------------
-" Status line
-"-------------------------------------------------------------------------------
-set laststatus=2				" Alway display the status line
-
-set ruler						" Always show cursor position
-set wildmenu					" Command <tab> auto completion"
-
-set lines=80 columns=100		" set page size
-set guioptions-=L	" Fix windows aero snap by disabling left scollbar
-set splitbelow
-set splitright
+set incsearch					" Show search results as you type
+set ignorecase					" Case insensitive
+set smartcase					" Use case if any caps used in search
+set hlsearch                    " Highlight search results
 
 "-------------------------------------------------------------------------------
 " Whitespace
@@ -124,45 +160,44 @@ set splitright
 set tabstop=4					" tab width is 4 spaces
 set softtabstop=4				
 set shiftwidth=4				" indent with 4 spaces
-"set noexpandtab				" do not expand tabs to spaces
 set expandtab					" expand tabs to spaces
-set showtabline=4
-set nowrap
-"set textwidth=80				" wrap lines at 80 chars
-"set autoindent					" use indentation of previous line
-"set smartindent				" use intelligent indentation for C
-"set cindent					" stricter rules for C programs
+"set noexpandtab				" do not expand tabs to spaces
 "set smarttab
-"set complete-=i
 
-set showmatch					" highlight matching braces
+set autoindent					" use indentation of previous line
+set smartindent				    " use intelligent indentation for C
+set cindent					    " stricter rules for C programs
+"set preserveindent             " Preserve indent after <Esc>
 
-set backspace=2 "set backspace=indent,eol,start
-
-"set guifont=Fixedsys:h9:cANSI:qDRAFT	" Default font
-"set guifont=OpenDyslexicMono:h9		" Dyslexic font
-
-"-------------------------------------------------------------------------------
-" set UTF-8 encoding
-"-------------------------------------------------------------------------------
-set encoding=utf-8
-set fenc=utf-8
-set termencoding=utf-8
-
-set spl=en_gb                   " Use real english for spelling
 "set spell                      " Enable spell checking
 "set nospell                    " Disable spell checking
+set spl=en_gb                   " Use real english for spelling
 
-set autoread				" Enable autoloading when file changes
+"-------------------------------------------------------------------------------
+" Reference settings for future use
+"-------------------------------------------------------------------------------
 
-"set formatoptions+=r		" Auto close comments
+"set timeoutlen=1000 ttimeoutlen=0     " Remove timeout when hitting escape
 
-"augroup project
-"    autocmd!
-"    autocmd BufRead,BufNewFile *.h,*.c
-"augroup END
+"set formatoptions+=r		    " Auto close comments
+"set textwidth=80				" wrap lines at 80 chars
+
+" intelligent comments
+"set comments=sl:/*,mb:\ *,elx:\ */
+
+
 
 "let &path.="src/include,/usr/include/AL,"
+
+"-------------------------------------------------------------------------------
+" Setup build shortcuts
+"-------------------------------------------------------------------------------
+
+if has('win32') || has('win64')
+    compiler msvc
+    set makeprg=nmake
+    noremap <F5> :<C-U>make<CR>
+endif
 
 " Build Project
 "set makeprg=make\ -C\ ../build\ -j9
@@ -172,8 +207,7 @@ set autoread				" Enable autoloading when file changes
 
 "nnoremap <F5> :!./my_great_program<cr>
 "map <F4> :call CurtineIncSw()<CR>
-map <F2> :NERDTreeToggle<CR>
-
+map <F3> :NERDTreeToggle<CR>
 
 "-------------------------------------------------------------------------------
 " Airline Theme
@@ -218,9 +252,16 @@ let g:airline_powerline_fonts = 1
 
 "let g:ctrlp_root_markers = ['Makefile', '.git']
 
-"set wildignore+=*/tmp/*,*.so,*.swp,*.zip
+" <Ctrl-P> <Ctrl-N>
+set complete-=i                 " Auto complete scan included files
 
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+
+" Ignored files/directories from autocomplete (and CtrlP)
+set wildignore+=*/tmp/*
+set wildignore+=*.so
+set wildignore+=*.zip
+"set wildignore+=*/node_modules/
 
 "-------------------------------------------------------------------------------
 " Ctrlp funky settings
@@ -242,26 +283,16 @@ set undofile
 set undolevels=1000
 set undoreload=10000
 
-set history=500
-
-" Ignored files/directories from autocomplete (and CtrlP)
-set wildignore+=*/tmp/*
-set wildignore+=*.so
-set wildignore+=*.zip
-
 "-------------------------------------------------------------------------------
 " Backup & Swap 
 "-------------------------------------------------------------------------------
 "set nobackup
 "set noswapfile
+"set nobackup nowritebackup noswapfile " Turn off backup files
 
 "-------------------------------------------------------------------------------
-" Colors & Formatting
+" Helper mappings
 "-------------------------------------------------------------------------------
-
-" Showcase comments in italics
-"highlight Comment cterm=italic gui=italic
-
 
 " Force vim navigation
 "nnoremap <Left> :echoe "Use h"<CR>
@@ -273,9 +304,6 @@ set wildignore+=*.zip
 ":inoremap <C-v> <ESC>"+pa
 ":vnoremap <C-c> "+y
 ":vnoremap <C-d> "+d
-
-" intelligent comments
-"set comments=sl:/*,mb:\ *,elx:\ */
 
 "-------------------------------------------------------------------------------
 " Enhanced keyboard mappings
@@ -290,7 +318,7 @@ map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 " recreate tags file with F5
 map <F5> :!ctags -R –c++-kinds=+p –fields=+iaS –extra=+q .<CR>
 " create doxygen comment
-map <F6> :Dox<CR>
+"map <F6> :Dox<CR>
 " build using makeprg with <F7>
 map <F7> :make<CR>
 " build using makeprg with <S-F7>
@@ -313,5 +341,4 @@ else
 "  map <M-Down> ]s
 "  map <M-Up> [s
 endif
-
 

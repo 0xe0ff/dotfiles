@@ -271,8 +271,6 @@ let g:airline_powerline_fonts = 1
 "let g:ctrlp_root_markers = ['Makefile', '.git']
 
 " <Ctrl-P> <Ctrl-N>
-set complete-=i                 " Auto complete scan included files
-
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 
 " Ignored files/directories from autocomplete (and CtrlP)

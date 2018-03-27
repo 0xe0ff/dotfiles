@@ -328,6 +328,9 @@ set history=500                 " Increase the undo limit
 nmap <A-o> o<ESC>
 nmap <A-O> O<ESC>
 
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
+
 if has("unix")
     let s:uname = system("uname -s")
     if s:uname == "Darwin\n"

@@ -4,6 +4,8 @@
 " General
 "-------------------------------------------------------------------------------
 set nocompatible				" be iMproved, required
+"set exrc                       " Allow local .vimrc files
+"set secure                     " Restrict local .vimrc files shell/writ<F3>e access
 
 " Leader Mappings
 "let mapleader = " "
@@ -37,35 +39,41 @@ augroup END
 " Load plugins
 "-------------------------------------------------------------------------------
 call plug#begin('~/.vim/bundle')
-	"Plug 'tpope/vim-sensible'
 	Plug 'vim-airline/vim-airline'
 	Plug 'vim-airline/vim-airline-themes'
-	"Plug 'Valloric/YouCompleteMe'
+"   Plug 'Valloric/YouCompleteMe'
+"   Plug 'vim-syntastic/syntastic'
+    Plug 'matze/vim-move' 
 	Plug 'jiangmiao/auto-pairs'
-	"Plug 'vim-syntastic/syntastic'
 	Plug 'octol/vim-cpp-enhanced-highlight'
-    Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'scrooloose/nerdcommenter'
+    Plug 'junegunn/vim-easy-align'
+    Plug 'mbbill/undotree'
+    Plug 'tomasr/molokai'
+    Plug 'airblade/vim-rooter'
+    
+    " File system navigation
+    Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'tacahiroy/ctrlp-funky'
-	"Plug 'ericcurtin/CurtineIncSw.vim'
-	"Plug 'haya14busa/incsearch.vim'
-	"Plug 'airblade/vim-rooter'
-    "Plug 'SirVer/ultisnips'
-	Plug 'junegunn/vim-easy-align'
+
+"   Plug 'ericcurtin/CurtineIncSw.vim'
+"   Plug 'haya14busa/incsearch.vim'
+"   Plug 'SirVer/ultisnips'
+
+"   Plug 'tpope/vim-eunuch'
+"   Plug 'tpope/vim-sensible'
 "	Plug 'tpope/vim-repeat'
-"    Plug 'tpope/vim-unimpaired'
-	"Plug 'mileszs/ack.vim'
-	Plug 'mbbill/undotree'
-	Plug 'tomasr/molokai'
-"	Plug 'kien/ctrlp.vim'
+"   Plug 'tpope/vim-unimpaired'
+
+"   Plug 'mileszs/ack.vim'
+
 	Plug 'elzr/vim-json'
-    Plug 'matze/vim-move' 
 	
 	" Git
-	"Plug 'tpope/vim-fugitive'
-	"Plug 'gregsexton/gitv', {'on': ['Gitv']}
-	"Plug 'airblade/vim-gitgutter'
+"   Plug 'tpope/vim-fugitive'
+"   Plug 'gregsexton/gitv', {'on': ['Gitv']}
+"   Plug 'airblade/vim-gitgutter'
 call plug#end()
 
 "-------------------------------------------------------------------------------
@@ -106,6 +114,7 @@ set cursorline                  " Highlight current line
 " Interface
 "-------------------------------------------------------------------------------
 set number						" Enable line numbering
+set numberwidth=5
 set showcmd						" Display commands under status bar
 set wildmenu					" Command mode <tab> auto completion
 set laststatus=2                " Show status line on startup
@@ -123,10 +132,10 @@ set splitbelow                  " Open new splits to the bottom
 
 set nowrap                      " Don't wrap lines at page boundary
 set backspace=2                 " set backspace=indent,eol,start
-set history=500                 " Keep last n commands in history
-set showmatch					" Highlight matching braces
+set showmatch					" Highlight matching braces ( % jump to matching braces )
 
-"set lazyredraw                  " Reduce the redraw frequency
+set complete-=i                 " Limit the files searched for auto-completes
+set lazyredraw                  " No redraw during macro and script execution
 set ttyfast                     " Send more characters in fast terminals
 set showtabline=2
 set scrolloff=5                 " Leave 5 lines of buffer when scrolling
@@ -169,6 +178,7 @@ set tabstop=4					" tab width is 4 spaces
 set softtabstop=4				
 set shiftwidth=4				" indent with 4 spaces
 set expandtab					" expand tabs to spaces
+set shiftround                  " round indentation to nearest multiple of shiftwidth
 "set noexpandtab				" do not expand tabs to spaces
 "set smarttab
 
@@ -189,7 +199,7 @@ set spl=en_gb                   " Use real english for spelling
 
 "set formatoptions+=r		    " Auto close comments
 "set textwidth=80				" wrap lines at 80 chars
-
+"set relativenumber             " Show cursor relative line numbers
 " intelligent comments
 "set comments=sl:/*,mb:\ *,elx:\ */
 
@@ -290,6 +300,7 @@ set undodir=~/.vim/undo/
 set undofile
 set undolevels=1000
 set undoreload=10000
+set history=500                 " Increase the undo limit
 
 "-------------------------------------------------------------------------------
 " Backup & Swap 

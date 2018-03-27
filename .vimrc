@@ -44,13 +44,14 @@ call plug#begin('~/.vim/bundle')
 	Plug 'jiangmiao/auto-pairs'
 	"Plug 'vim-syntastic/syntastic'
 	Plug 'octol/vim-cpp-enhanced-highlight'
+    Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+    Plug 'scrooloose/nerdcommenter'
+    Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'tacahiroy/ctrlp-funky'
 	"Plug 'ericcurtin/CurtineIncSw.vim'
 	"Plug 'haya14busa/incsearch.vim'
 	"Plug 'airblade/vim-rooter'
-	Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-	Plug 'ctrlpvim/ctrlp.vim'
-	"Plug 'tacahiroy/ctrlp-funky'
-	Plug 'SirVer/ultisnips'
+    "Plug 'SirVer/ultisnips'
 	Plug 'junegunn/vim-easy-align'
 "	Plug 'tpope/vim-repeat'
 "    Plug 'tpope/vim-unimpaired'
@@ -87,10 +88,12 @@ set t_Co=256					" Enable 256 colour support
 let g:molokai_original = 1
 colors molokai
 
+set lines=80 columns=100		" Set page size
+
 set colorcolumn=80				" Draw column marker"
 highlight ColorColumn ctermbg=darkgray
 
-set lines=80 columns=100		" Set page size
+set cursorline                  " Highlight current line
 
 "set listchars=extends:→         " Show arrow if line continues rightwards
 "set listchars+=precedes:←       " Show arrow if line continues leftwards
@@ -98,11 +101,12 @@ set lines=80 columns=100		" Set page size
 "set guifont=Fixedsys:h9:cANSI:qDRAFT	" Default font
 "set guifont=OpenDyslexicMono:h9		" Dyslexic font
 
+
 "-------------------------------------------------------------------------------
 " Interface
 "-------------------------------------------------------------------------------
 set number						" Enable line numbering
-set showcmd						" Display incomplete commands
+set showcmd						" Display commands under status bar
 set wildmenu					" Command mode <tab> auto completion
 set laststatus=2                " Show status line on startup
 set autoread                    " Auto reload changed files
@@ -127,6 +131,10 @@ set ttyfast                     " Send more characters in fast terminals
 set showtabline=2
 set scrolloff=5                 " Leave 5 lines of buffer when scrolling
 "set sidescrolloff=10            " Leave 10 characters of horizontal buffer when scrolling
+
+" Update term title but restore old title after leaving Vim
+set title
+set titleold=
 
 "-------------------------------------------------------------------------------
 " Mouse
@@ -304,6 +312,13 @@ set undoreload=10000
 ":inoremap <C-v> <ESC>"+pa
 ":vnoremap <C-c> "+y
 ":vnoremap <C-d> "+d
+
+" Insert newline without mode switch
+nmap <A-o> o<ESC>
+nmap <A-O> O<ESC>
+
+" Cut 
+nmap <A-d> dd<ESC>
 
 "-------------------------------------------------------------------------------
 " Enhanced keyboard mappings

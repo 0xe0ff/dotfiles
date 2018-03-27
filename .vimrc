@@ -51,11 +51,13 @@ call plug#begin('~/.vim/bundle')
     Plug 'mbbill/undotree'
     Plug 'tomasr/molokai'
     Plug 'airblade/vim-rooter'
-    
+    Plug 'w0rp/ale'
+
     " File system navigation
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'tacahiroy/ctrlp-funky'
+    Plug 'octref/rootignore'
 
 "   Plug 'ericcurtin/CurtineIncSw.vim'
 "   Plug 'haya14busa/incsearch.vim'
@@ -71,9 +73,9 @@ call plug#begin('~/.vim/bundle')
 	Plug 'elzr/vim-json'
 	
 	" Git
-"   Plug 'tpope/vim-fugitive'
-"   Plug 'gregsexton/gitv', {'on': ['Gitv']}
-"   Plug 'airblade/vim-gitgutter'
+    Plug 'tpope/vim-fugitive'
+    Plug 'gregsexton/gitv', {'on': ['Gitv']}
+    Plug 'airblade/vim-gitgutter'
 call plug#end()
 
 "-------------------------------------------------------------------------------

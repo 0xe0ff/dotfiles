@@ -328,8 +328,20 @@ set history=500                 " Increase the undo limit
 nmap <A-o> o<ESC>
 nmap <A-O> O<ESC>
 
-" Cut 
-nmap <A-d> dd<ESC>
+if has("unix")
+    let s:uname = system("uname -s")
+    if s:uname == "Darwin\n"
+        let g:move_map_keys = 0
+        vmap ∆ <Plug>MoveBlockDown
+        vmap ˚ <Plug>MoveBlockUp
+        nmap ∆ <Plug>MoveLineDown
+        nmap ˚ <Plug>MoveLineUp
+
+        nmap ø o<ESC>
+        nmap Ø O<ESC>
+  endif
+endif
+
 
 "-------------------------------------------------------------------------------
 " Enhanced keyboard mappings

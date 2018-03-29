@@ -41,8 +41,8 @@ augroup END
 call plug#begin('~/.vim/bundle')
 	Plug 'vim-airline/vim-airline'
 	Plug 'vim-airline/vim-airline-themes'
-"   Plug 'Valloric/YouCompleteMe'
-"   Plug 'vim-syntastic/syntastic'
+    Plug 'Valloric/YouCompleteMe'
+    "Plug 'vim-syntastic/syntastic'
     Plug 'matze/vim-move' 
 	Plug 'jiangmiao/auto-pairs'
 	Plug 'octol/vim-cpp-enhanced-highlight'
@@ -52,6 +52,8 @@ call plug#begin('~/.vim/bundle')
     Plug 'tomasr/molokai'
     Plug 'airblade/vim-rooter'
     Plug 'w0rp/ale'
+    "Plug 'jeffkreeftmeijer/vim-numbertoggle'
+    "Plug 'wesQ3/vim-windowswap'
 
     " File system navigation
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -59,23 +61,24 @@ call plug#begin('~/.vim/bundle')
     Plug 'tacahiroy/ctrlp-funky'
     Plug 'octref/rootignore'
 
-"   Plug 'ericcurtin/CurtineIncSw.vim'
-"   Plug 'haya14busa/incsearch.vim'
-"   Plug 'SirVer/ultisnips'
+    "Plug 'ericcurtin/CurtineIncSw.vim'
+    "Plug 'haya14busa/incsearch.vim'
+    "Plug 'SirVer/ultisnips'
 
-"   Plug 'tpope/vim-eunuch'
-"   Plug 'tpope/vim-sensible'
-"	Plug 'tpope/vim-repeat'
-"   Plug 'tpope/vim-unimpaired'
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-surround'
+    "Plug 'tpope/vim-eunuch'
+    "Plug 'tpope/vim-sensible'
+    "Plug 'tpope/vim-unimpaired'
 
-"   Plug 'mileszs/ack.vim'
+    "Plug 'mileszs/ack.vim'
 
 	Plug 'elzr/vim-json'
 	
 	" Git
-    Plug 'tpope/vim-fugitive'
-    Plug 'gregsexton/gitv', {'on': ['Gitv']}
-    Plug 'airblade/vim-gitgutter'
+    "Plug 'tpope/vim-fugitive'
+    "Plug 'gregsexton/gitv', {'on': ['Gitv']}
+    "Plug 'airblade/vim-gitgutter'
 call plug#end()
 
 "-------------------------------------------------------------------------------
@@ -98,7 +101,7 @@ set t_Co=256					" Enable 256 colour support
 let g:molokai_original = 1
 colors molokai
 
-set lines=80 columns=100		" Set page size
+set lines=80 columns=179		" Set page size
 
 set colorcolumn=80				" Draw column marker"
 highlight ColorColumn ctermbg=darkgray
@@ -287,6 +290,12 @@ set wildignore+=*.zip
 "nnoremap <Leader>fu :CtrlPFunky<Cr>
 " narrow the list down with a word under cursor
 "nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+
+"-------------------------------------------------------------------------------
+" EasyAlign settings
+"-------------------------------------------------------------------------------
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
 
 "-------------------------------------------------------------------------------
 " Undo tree settings

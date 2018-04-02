@@ -1,17 +1,19 @@
-" Vim config
+" Vim configuration file
 
 "-------------------------------------------------------------------------------
 " General
 "-------------------------------------------------------------------------------
-set nocompatible				" be iMproved, required
+set nocompatible				" Disable vi compatibility
 "set exrc                       " Allow local .vimrc files
 "set secure                     " Restrict local .vimrc files shell/writ<F3>e access
 
+"-------------------------------------------------------------------------------
 " Leader Mappings
-"let mapleader = " "
-"let localleader = "//"
+"-------------------------------------------------------------------------------
+let mapleader = " "
+let localleader = "\\"
 
-map <Space> <leader>
+"map <Space> <leader>
 map <Leader>w :update<CR>
 map <Leader>q :qall<CR>
 map <Leader>gs :Gstatus<CR>
@@ -27,7 +29,7 @@ endif
 "-------------------------------------------------------------------------------
 " Filetype handling
 "-------------------------------------------------------------------------------
-filetype plugin indent on		" enable filetype detection
+filetype plugin indent on		" Enable filetype detection
 
 " Make .h and .c files treated as pure c not c++
 augroup project
@@ -41,24 +43,33 @@ augroup END
 call plug#begin('~/.vim/bundle')
 	Plug 'vim-airline/vim-airline'
 	Plug 'vim-airline/vim-airline-themes'
+
+    " Tab autocompletion
     Plug 'Valloric/YouCompleteMe'
+    "Plug 'ervandew/supertab'
+
     "Plug 'vim-syntastic/syntastic'
     Plug 'matze/vim-move' 
 	Plug 'jiangmiao/auto-pairs'
 	Plug 'octol/vim-cpp-enhanced-highlight'
-    Plug 'scrooloose/nerdcommenter'
+
+    " Comment toggling
+    " Plug 'scrooloose/nerdcommenter'
+    Plug 'tomtom/tcomment_vim'
+
     Plug 'junegunn/vim-easy-align'
     Plug 'mbbill/undotree'
     Plug 'tomasr/molokai'
     Plug 'airblade/vim-rooter'
     Plug 'w0rp/ale'
-    "Plug 'jeffkreeftmeijer/vim-numbertoggle'
+    Plug 'jeffkreeftmeijer/vim-numbertoggle'
     "Plug 'wesQ3/vim-windowswap'
 
     " File system navigation
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'tacahiroy/ctrlp-funky'
+    " Plug 'wincent/command-t'
     Plug 'octref/rootignore'
 
     "Plug 'ericcurtin/CurtineIncSw.vim'
@@ -70,10 +81,13 @@ call plug#begin('~/.vim/bundle')
     "Plug 'tpope/vim-eunuch'
     "Plug 'tpope/vim-sensible'
     "Plug 'tpope/vim-unimpaired'
+    " Plug 'wikitopian/hardmode'
 
     "Plug 'mileszs/ack.vim'
 
+    "Plug 'pangloss/vim-javascript'
 	Plug 'elzr/vim-json'
+    Plug 'nessss/vim-gml'
 	
 	" Git
     "Plug 'tpope/vim-fugitive'
@@ -122,6 +136,7 @@ set number						" Enable line numbering
 set numberwidth=5
 set showcmd						" Display commands under status bar
 set wildmenu					" Command mode <tab> auto completion
+" set wildmode=longest:full       " Use intelligent completion
 set laststatus=2                " Show status line on startup
 set autoread                    " Auto reload changed files
 
@@ -176,25 +191,41 @@ set ignorecase					" Case insensitive
 set smartcase					" Use case if any caps used in search
 set hlsearch                    " Highlight search results
 
+" Turn off search highlight
+nnoremap <leader><space> :nohlsearch<CR>
+
 "-------------------------------------------------------------------------------
 " Whitespace
 "-------------------------------------------------------------------------------
-set tabstop=4					" tab width is 4 spaces
-set softtabstop=4				
-set shiftwidth=4				" indent with 4 spaces
-set expandtab					" expand tabs to spaces
-set shiftround                  " round indentation to nearest multiple of shiftwidth
-"set noexpandtab				" do not expand tabs to spaces
-"set smarttab
+set tabstop=4					" Tab width is 4 spaces
+set softtabstop=4				" Backspace keeps tab alignment
+set shiftwidth=4				" Indent with 4 spaces
+set expandtab					" Expand tabs to spaces
+set shiftround                  " Round indentation to nearest multiple of shiftwidth
+"set noexpandtab				" Do not expand tabs to spaces
+"set smarttab                   " Use tabs for indent and spaces for alignment
 
-set autoindent					" use indentation of previous line
-set smartindent				    " use intelligent indentation for C
-set cindent					    " stricter rules for C programs
+set autoindent					" Use indentation of previous line
+set smartindent				    " Use intelligent indentation for C
+set cindent					    " Stricter rules for C programs
+set cinoptions+=g0,(0,u0,U0     " Fix cindent style
+"set cinoptions+=:0,g0          " Fix cindent style
 "set preserveindent             " Preserve indent after <Esc>
 
 "set spell                      " Enable spell checking
 "set nospell                    " Disable spell checking
 set spl=en_gb                   " Use real english for spelling
+
+"-------------------------------------------------------------------------------
+" Folding
+"-------------------------------------------------------------------------------
+"set foldenable                  " Enable folding
+"set foldlevelstart=10           " Open most folds by default
+"set foldnestmax=10              " Nested fold max
+"set foldmethod=indent            " Fold based on indent level
+
+" Open/closes folds
+"nnoremap <leader>za
 
 "-------------------------------------------------------------------------------
 " Reference settings for future use
@@ -203,11 +234,12 @@ set spl=en_gb                   " Use real english for spelling
 "set timeoutlen=1000 ttimeoutlen=0     " Remove timeout when hitting escape
 
 "set formatoptions+=r		    " Auto close comments
-"set textwidth=80				" wrap lines at 80 chars
+"set textwidth=80				" Wrap lines at 80 chars
 "set relativenumber             " Show cursor relative line numbers
 " intelligent comments
 "set comments=sl:/*,mb:\ *,elx:\ */
-
+au FileType c,cpp,cs,java,javascript setlocal comments-=:// comments+=f://
+au FileType vim setlocal comments-=:" comments+=f:"
 
 
 "let &path.="src/include,/usr/include/AL,"
@@ -276,26 +308,33 @@ let g:airline_powerline_fonts = 1
 "let g:ctrlp_root_markers = ['Makefile', '.git']
 
 " <Ctrl-P> <Ctrl-N>
-let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+"let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+"let g:ctrlp_user_command = 'ag %s --files-with-matches -g "" --ignore "\.git$\|\.hg$\|\.svn$"'
+
+let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others']
 
 " Ignored files/directories from autocomplete (and CtrlP)
 set wildignore+=*/tmp/*
 set wildignore+=*.so
 set wildignore+=*.zip
-"set wildignore+=*/node_modules/
+set wildignore+=*/node_modules/
 
 "-------------------------------------------------------------------------------
 " Ctrlp funky settings
 "-------------------------------------------------------------------------------
-"nnoremap <Leader>fu :CtrlPFunky<Cr>
+nnoremap <Leader>fu :CtrlPFunky<Cr>
 " narrow the list down with a word under cursor
-"nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
 
 "-------------------------------------------------------------------------------
 " EasyAlign settings
 "-------------------------------------------------------------------------------
 nmap ga <Plug>(EasyAlign)
 xmap ga <Plug>(EasyAlign)
+
+"let g:easy_align_ignore_groups = ['Comment', 'String']
+let g:easy_align_ignore_groups = ['String']
 
 "-------------------------------------------------------------------------------
 " Undo tree settings
@@ -354,28 +393,36 @@ if has("unix")
   endif
 endif
 
+"-------------------------------------------------------------------------------
+" Buffer selection
+"-------------------------------------------------------------------------------
+nnoremap <leader>n :bnext<CR>
+nnoremap <leader>b :bprevious<CR>
+
+"nmap <leader>n :bnext<CR>
+"nmap <leader>b :bprevious<CR>
 
 "-------------------------------------------------------------------------------
 " Enhanced keyboard mappings
 "-------------------------------------------------------------------------------
 
-" in normal mode F2 will save the file
+" In normal mode F2 will save the file
 nmap <F2> :w<CR>
-" in insert mode F2 will exit insert, save, enters insert again
+" In insert mode F2 will exit insert, save, enters insert again
 imap <F2> <ESC>:w<CR>i
-" switch between header/source with F4
+" Switch between header/source with F4
 map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
-" recreate tags file with F5
+" Recreate tags file with F5
 map <F5> :!ctags -R –c++-kinds=+p –fields=+iaS –extra=+q .<CR>
-" create doxygen comment
+" Create doxygen comment
 "map <F6> :Dox<CR>
-" build using makeprg with <F7>
+" Build using makeprg with <F7>
 map <F7> :make<CR>
-" build using makeprg with <S-F7>
+" Build using makeprg with <S-F7>
 map <S-F7> :make clean all<CR>
-" goto definition with F12
+" Goto definition with F12
 map <F12> <C-]>
-" in diff mode we use the spell check keys for merging
+" In diff mode we use the spell check keys for merging
 if &diff
   ” diff settings
   map <M-Down> ]c
@@ -384,9 +431,9 @@ if &diff
   map <M-Right> dp
   map <F9> :new<CR>:read !svn diff<CR>:set syntax=diff buftype=nofile<CR>gg
 else
-  " spell settings
+  " Spell settings
 "  :setlocal spell spelllang=en
-  " set the spellfile - folders must exist
+  " Set the spellfile - folders must exist
 "  set spellfile=$HOME/vimfiles/spellfile.add
 "  map <M-Down> ]s
 "  map <M-Up> [s

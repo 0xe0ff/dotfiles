@@ -46,12 +46,15 @@ call plug#begin('~/.vim/bundle')
 
     " Tab autocompletion
     Plug 'Valloric/YouCompleteMe'
+    " Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
     "Plug 'ervandew/supertab'
 
     "Plug 'vim-syntastic/syntastic'
     Plug 'matze/vim-move' 
 	Plug 'jiangmiao/auto-pairs'
-	Plug 'octol/vim-cpp-enhanced-highlight'
+	" Plug 'octol/vim-cpp-enhanced-highlight'
+    " Plug 'bfrg/vim-cpp-modern'
+    " Plug 'jeaye/color_coded'
 
     " Comment toggling
     " Plug 'scrooloose/nerdcommenter'
@@ -61,7 +64,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'mbbill/undotree'
     Plug 'tomasr/molokai'
     Plug 'airblade/vim-rooter'
-    Plug 'w0rp/ale'
+    " Plug 'w0rp/ale'
     Plug 'jeffkreeftmeijer/vim-numbertoggle'
     "Plug 'wesQ3/vim-windowswap'
 
@@ -71,6 +74,10 @@ call plug#begin('~/.vim/bundle')
     Plug 'tacahiroy/ctrlp-funky'
     " Plug 'wincent/command-t'
     Plug 'octref/rootignore'
+
+    " Document navigation
+    " Plug 'joequery/Stupid-EasyMotion'
+    Plug 'easymotion/vim-easymotion'
 
     "Plug 'ericcurtin/CurtineIncSw.vim'
     "Plug 'haya14busa/incsearch.vim'
@@ -86,6 +93,8 @@ call plug#begin('~/.vim/bundle')
     "Plug 'mileszs/ack.vim'
 
     "Plug 'pangloss/vim-javascript'
+    "Plug 'plasticboy/vim-markdown'
+
 	Plug 'elzr/vim-json'
     Plug 'nessss/vim-gml'
 	
@@ -280,12 +289,24 @@ let g:airline_powerline_fonts = 1
 "-------------------------------------------------------------------------------
 " YouCompleteMe settings
 "-------------------------------------------------------------------------------
-"let g:ycm_show_diagnostics_ui = 1
+" OSX clang support
+" ./install.py --system-libclang --clang-completer
+
+" let g:ycm_show_diagnostics_ui = 1
+
 "let g:ycm_autoclose_preview_window_after_insertion = 1
 "let g:ycm_autoclose_preview_window_after_completion = 1
 
 "let g:ycm_key_list_select_completion = ['<TAB>', '<Down>', '<Enter>']
 "let g:ycm_key_list_stop_completion = ['<C-y>', '<C-Space>', '<Space>']
+
+" let g:ycm_goto_buffer_command = 'new-tab'
+let g:ycm_always_populate_location_list = 1
+" let g:syntastic_always_populate_loc_list = 1
+
+nnoremap <leader>ff :YcmCompleter FixIt<CR>
+nnoremap <leader>gt :YcmCompleter GoTo<CR>
+nnoremap <leader>cc :close<CR>
 
 "-------------------------------------------------------------------------------
 " Syntasic settings
@@ -376,8 +397,27 @@ set history=500                 " Increase the undo limit
 nmap <A-o> o<ESC>
 nmap <A-O> O<ESC>
 
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
+" Next/Prev location (Error/Warnings list)
+noremap <leader>] :lnext<CR>
+noremap <leader>[ :lprev<CR>
+
+" Quicker window movement
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
+"-------------------------------------------------------------------------------
+" Ale settings
+"-------------------------------------------------------------------------------
+" let g:ale_linters = {
+" \   'javascript': ['jshint'],
+" \   'c++': ['clang'],
+" \   'c': ['clang']
+" \}
+"
+" nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+" nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 if has("unix")
     let s:uname = system("uname -s")

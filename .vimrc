@@ -1,11 +1,32 @@
 " Vim configuration file
 
 "-------------------------------------------------------------------------------
+" Identify platform
+"-------------------------------------------------------------------------------
+silent function! OSX()
+    return has('macunix')
+endfunction
+silent function! LINUX()
+    return has('unix') && !has('macunix') && !has('win32unix')
+endfunction
+silent function! WINDOWS()
+    return  (has('win32') || has('win64'))
+endfunction
+
+"-------------------------------------------------------------------------------
 " General
 "-------------------------------------------------------------------------------
 set nocompatible				" Disable vi compatibility
 "set exrc                       " Allow local .vimrc files
 "set secure                     " Restrict local .vimrc files shell/writ<F3>e access
+
+"-------------------------------------------------------------------------------
+" UTF-8 encoding
+"-------------------------------------------------------------------------------
+set encoding=utf-8
+set fenc=utf-8
+set termencoding=utf-8
+"scriptencoding utf-8
 
 "-------------------------------------------------------------------------------
 " Leader Mappings
@@ -14,15 +35,15 @@ let mapleader = " "
 let localleader = "\\"
 
 "map <Space> <leader>
-map <Leader>w :update<CR>
+map <Leader>ww :update<CR>
 map <Leader>q :qall<CR>
-map <Leader>gs :Gstatus<CR>
+" map <Leader>gs :Gstatus<CR>
 
 "-------------------------------------------------------------------------------
 " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
 " across (heterogeneous) systems easier.
 "-------------------------------------------------------------------------------
-if has('win32') || has('win64')
+if WINDOWS()
   set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
 endif
 
@@ -67,6 +88,7 @@ call plug#begin('~/.vim/bundle')
     " Plug 'w0rp/ale'
     Plug 'jeffkreeftmeijer/vim-numbertoggle'
     "Plug 'wesQ3/vim-windowswap'
+    Plug 'cesheridan/tabwins'
 
     " File system navigation
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -74,13 +96,19 @@ call plug#begin('~/.vim/bundle')
     Plug 'tacahiroy/ctrlp-funky'
     " Plug 'wincent/command-t'
     Plug 'octref/rootignore'
+    Plug 'FelikZ/ctrlp-py-matcher'
 
     " Document navigation
-    " Plug 'joequery/Stupid-EasyMotion'
     Plug 'easymotion/vim-easymotion'
 
+    " Fuzzy search
+    Plug 'mileszs/ack.vim'
+    Plug '/usr/local/opt/fzf'
+    Plug 'junegunn/fzf.vim'
+    " Plug 'haya14busa/incsearch.vim'
+    " Plug 'haya14busa/incsearch-easymotion.vim'
+
     "Plug 'ericcurtin/CurtineIncSw.vim'
-    "Plug 'haya14busa/incsearch.vim'
     "Plug 'SirVer/ultisnips'
 
     Plug 'tpope/vim-repeat'
@@ -90,27 +118,17 @@ call plug#begin('~/.vim/bundle')
     "Plug 'tpope/vim-unimpaired'
     " Plug 'wikitopian/hardmode'
 
-    "Plug 'mileszs/ack.vim'
-
-    "Plug 'pangloss/vim-javascript'
-    "Plug 'plasticboy/vim-markdown'
-
+    " Syntax highlighting
 	Plug 'elzr/vim-json'
     Plug 'nessss/vim-gml'
+    "Plug 'pangloss/vim-javascript'
+    "Plug 'plasticboy/vim-markdown'
 	
 	" Git
     "Plug 'tpope/vim-fugitive'
     "Plug 'gregsexton/gitv', {'on': ['Gitv']}
     "Plug 'airblade/vim-gitgutter'
 call plug#end()
-
-"-------------------------------------------------------------------------------
-" UTF-8 encoding
-"-------------------------------------------------------------------------------
-set encoding=utf-8
-set fenc=utf-8
-set termencoding=utf-8
-"scriptencoding utf-8
 
 "-------------------------------------------------------------------------------
 " Colors & Formatting
@@ -136,6 +154,8 @@ set cursorline                  " Highlight current line
 
 "set guifont=Fixedsys:h9:cANSI:qDRAFT	" Default font
 "set guifont=OpenDyslexicMono:h9		" Dyslexic font
+
+set fileformats=unix
 
 
 "-------------------------------------------------------------------------------
@@ -201,7 +221,10 @@ set smartcase					" Use case if any caps used in search
 set hlsearch                    " Highlight search results
 
 " Turn off search highlight
-nnoremap <leader><space> :nohlsearch<CR>
+nnoremap <leader>/ :nohlsearch<CR>
+
+" Clear last search
+nnoremap <leader>// /oifowfjfjowejfowfjowfjowjfowif<CR>
 
 "-------------------------------------------------------------------------------
 " Whitespace
@@ -239,6 +262,7 @@ set spl=en_gb                   " Use real english for spelling
 "-------------------------------------------------------------------------------
 " Reference settings for future use
 "-------------------------------------------------------------------------------
+set timeoutlen=1000              " Set leader timeout default 1000
 
 "set timeoutlen=1000 ttimeoutlen=0     " Remove timeout when hitting escape
 
@@ -247,17 +271,22 @@ set spl=en_gb                   " Use real english for spelling
 "set relativenumber             " Show cursor relative line numbers
 " intelligent comments
 "set comments=sl:/*,mb:\ *,elx:\ */
-au FileType c,cpp,cs,java,javascript setlocal comments-=:// comments+=f://
-au FileType vim setlocal comments-=:" comments+=f:"
-
 
 "let &path.="src/include,/usr/include/AL,"
+
+"-------------------------------------------------------------------------------
+" Comment continuation settings
+"-------------------------------------------------------------------------------
+au FileType c,cpp,cs,java,javascript setlocal comments-=:// comments+=f://
+au FileType vim setlocal formatoptions-=cro
+
+
 
 "-------------------------------------------------------------------------------
 " Setup build shortcuts
 "-------------------------------------------------------------------------------
 
-if has('win32') || has('win64')
+if WINDOWS()
     compiler msvc
     set makeprg=nmake
     noremap <F5> :<C-U>make<CR>
@@ -276,7 +305,7 @@ map <F3> :NERDTreeToggle<CR>
 "-------------------------------------------------------------------------------
 " Airline Theme
 "-------------------------------------------------------------------------------
-if has('win32') || has('win64') 
+if WINDOWS()
     set guifont=Inconsolata-g\ for\ Powerline
 else
     set guifont=Monaco\ for\ Powerline
@@ -303,10 +332,11 @@ let g:airline_powerline_fonts = 1
 " let g:ycm_goto_buffer_command = 'new-tab'
 let g:ycm_always_populate_location_list = 1
 " let g:syntastic_always_populate_loc_list = 1
+let g:ycm_confirm_extra_conf = 0
 
-nnoremap <leader>ff :YcmCompleter FixIt<CR>
-nnoremap <leader>gt :YcmCompleter GoTo<CR>
-nnoremap <leader>cc :close<CR>
+nnoremap <Leader>ff :YcmCompleter FixIt<CR>
+nnoremap <Leader>gt :YcmCompleter GoTo<CR>
+" nnoremap <leader>cc :close<CR>
 
 "-------------------------------------------------------------------------------
 " Syntasic settings
@@ -325,21 +355,38 @@ nnoremap <leader>cc :close<CR>
 "-------------------------------------------------------------------------------
 "let g:ctrlp_map = '<c-p>'
 "let g:ctrlp_cmd = 'CtrlP'
+if executable("ag")
+    let g:ctrlp_use_ag_command = 1
+else
+    let g:ctrlp_use_ag_command = 0
+endif
+
+let g:ctrlp_working_path_mode = 0
+" let g:ctrlp_max_files = 0
+let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+" let g:ctrlp_match_window = 'bottom,order:ttb'
+" let g:ctrlp_switch_buffer = 0
 
 "let g:ctrlp_root_markers = ['Makefile', '.git']
 
-" <Ctrl-P> <Ctrl-N>
-"let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
-"let g:ctrlp_user_command = 'ag %s --files-with-matches -g "" --ignore "\.git$\|\.hg$\|\.svn$"'
+if (g:ctrlp_use_ag_command)
+    " Use ag over grep
+    set grepprg=ag\ --nogroup\ --nocolor
 
-let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
-let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others']
+    " let g:ctrlp_user_command = 'ag %s --files-with-matches -g "" --ignore "\.git$\|\.hg$\|\.svn$"'
+    let g:ctrlp_user_command = 'ag %s --files-with-matches --nocolor -g "" --ignore "\.git$\|\.hg$\|\.svn$" --ignore "\node_modules$"'
+else
+    " let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+    let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
+    let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others']
+endif
 
 " Ignored files/directories from autocomplete (and CtrlP)
-set wildignore+=*/tmp/*
+set wildignore+=*/tmp/
 set wildignore+=*.so
 set wildignore+=*.zip
 set wildignore+=*/node_modules/
+set wildignore+=*.tpak
 
 "-------------------------------------------------------------------------------
 " Ctrlp funky settings
@@ -347,6 +394,17 @@ set wildignore+=*/node_modules/
 nnoremap <Leader>fu :CtrlPFunky<Cr>
 " narrow the list down with a word under cursor
 nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+
+"-------------------------------------------------------------------------------
+" Ack settings
+"-------------------------------------------------------------------------------
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+
+cnoreabbrev Ack Ack!
+nnoremap <Leader>aa :Ack!<Space>
+nnoremap <Leader>a :Ack!<CR>
 
 "-------------------------------------------------------------------------------
 " EasyAlign settings
@@ -358,6 +416,70 @@ xmap ga <Plug>(EasyAlign)
 let g:easy_align_ignore_groups = ['String']
 
 "-------------------------------------------------------------------------------
+" EasyMotion settings
+"-------------------------------------------------------------------------------
+
+" Disable default mappings avoid features not used
+let g:EasyMotion_do_mapping = 0
+
+" Limit movement to what you can acutally see
+let g:EasyMotion_off_screen_search = 0
+
+" Use uppercase target labels and type as a lower case
+" let g:EasyMotion_use_upper = 1
+
+ " type `l` and match `l`&`L`
+let g:EasyMotion_smartcase = 1
+
+" Smartsign (type `3` and match `3`&`#`)
+let g:EasyMotion_use_smartsign_us = 1
+
+" <Leader>f{char} to move to {char}
+map <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
+
+" s{char}{char} to move to {char}{char}
+" nmap <leader>s <Plug>(easymotion-s)
+" nmap <leader>s <Plug>(easymotion-overwin-f2)
+
+nmap S <Plug>(easymotion-s)
+nmap S <Plug>(easymotion-overwin-f2)
+
+nmap <leader>s <Plug>(easymotion-s)
+nmap <leader>s <Plug>(easymotion-overwin-f2)
+
+" Bidirectional & within line 't' motion
+omap t <Plug>(easymotion-bd-tl)
+
+" Move to line
+map <Leader>l <Plug>(easymotion-bd-jk)
+nmap <Leader>l <Plug>(easymotion-overwin-line)
+
+" Move to begin of word
+map  W <Plug>(easymotion-bd-w)
+nmap W <Plug>(easymotion-overwin-w)
+
+map  <leader>w <Plug>(easymotion-bd-w)
+nmap <leader>w <Plug>(easymotion-overwin-w)
+
+" Move to end of word
+map  E <Plug>(easymotion-bd-w)
+nmap E <Plug>(easymotion-overwin-w)
+
+map  <leader>e <Plug>(easymotion-bd-w)
+nmap <leader>e <Plug>(easymotion-overwin-w)
+
+"-------------------------------------------------------------------------------
+" Tabwins settings
+"-------------------------------------------------------------------------------
+
+" Disable 'Tabwins' menu
+let g:load_tabwins_menu_is_wanted = 'N'
+
+" Disable command aliases
+let  g:tabwins_create_aliases_is_wanted    = 'N'
+
+"-------------------------------------------------------------------------------
 " Undo tree settings
 "-------------------------------------------------------------------------------
 noremap <Leader>u :UndotreeToggle<CR>
@@ -365,7 +487,7 @@ noremap <Leader>u :UndotreeToggle<CR>
 "-------------------------------------------------------------------------------
 " Persistent undo
 "-------------------------------------------------------------------------------
-set undodir=~/.vim/undo/
+set undodir=~/.vim/undo//
 set undofile
 set undolevels=1000
 set undoreload=10000
@@ -374,6 +496,8 @@ set history=500                 " Increase the undo limit
 "-------------------------------------------------------------------------------
 " Backup & Swap 
 "-------------------------------------------------------------------------------
+set backupdir=~/.vim/backup//
+set directory=~/.vim/swap//
 "set nobackup
 "set noswapfile
 "set nobackup nowritebackup noswapfile " Turn off backup files
@@ -407,6 +531,17 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
+" Save session
+nnoremap <localleader>s :mksession!<CR>
+
+" Edit vimrc/zshrc and load vimrc bindings
+nnoremap <localleader>ev :edit $MYVIMRC<CR>
+nnoremap <localleader>ez :edit ~/.zshrc<CR>
+nnoremap <localleader>sv :source $MYVIMRC<CR>
+
+" Fix ^M file endings
+noremap <localleader>ff :%s/\r//g<CR>:w<CR>
+
 "-------------------------------------------------------------------------------
 " Ale settings
 "-------------------------------------------------------------------------------
@@ -419,18 +554,15 @@ nnoremap <C-l> <C-w>l
 " nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 " nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
-if has("unix")
-    let s:uname = system("uname -s")
-    if s:uname == "Darwin\n"
-        let g:move_map_keys = 0
-        vmap ∆ <Plug>MoveBlockDown
-        vmap ˚ <Plug>MoveBlockUp
-        nmap ∆ <Plug>MoveLineDown
-        nmap ˚ <Plug>MoveLineUp
+if OSX()
+    let g:move_map_keys = 0
+    vmap ∆ <Plug>MoveBlockDown
+    vmap ˚ <Plug>MoveBlockUp
+    nmap ∆ <Plug>MoveLineDown
+    nmap ˚ <Plug>MoveLineUp
 
-        nmap ø o<ESC>
-        nmap Ø O<ESC>
-  endif
+    nmap ø o<ESC>
+    nmap Ø O<ESC>
 endif
 
 "-------------------------------------------------------------------------------
@@ -441,6 +573,9 @@ nnoremap <leader>b :bprevious<CR>
 
 "nmap <leader>n :bnext<CR>
 "nmap <leader>b :bprevious<CR>
+
+nnoremap <leader><leader>n :tabn<CR>
+nnoremap <leader><leader>b :tabp<CR>
 
 "-------------------------------------------------------------------------------
 " Enhanced keyboard mappings

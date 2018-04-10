@@ -37,6 +37,7 @@ let localleader = "\\"
 "map <Space> <leader>
 map <Leader>ww :update<CR>
 map <silent><C-q> :Bdelete<CR>
+map <silent><C-Q> :Bdelete!<CR>
 map <silent><Leader>q :q<CR>
 map <Leader>qa :qall<CR>
 " map <Leader>gs :Gstatus<CR>
@@ -75,6 +76,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'vim-syntastic/syntastic'
     Plug 'matze/vim-move' 
 	Plug 'jiangmiao/auto-pairs'
+    Plug 'pbrisbin/vim-mkdir'
 	" Plug 'octol/vim-cpp-enhanced-highlight'
     " Plug 'bfrg/vim-cpp-modern'
     " Plug 'jeaye/color_coded'
@@ -103,6 +105,7 @@ call plug#begin('~/.vim/bundle')
     " Plug 'wincent/command-t'
     Plug 'octref/rootignore'
     Plug 'FelikZ/ctrlp-py-matcher'
+    " Plug 'Shougo/denite.nvim'
 
     " Document navigation
     Plug 'easymotion/vim-easymotion'
@@ -119,6 +122,7 @@ call plug#begin('~/.vim/bundle')
 
     " Plug 'ericcurtin/CurtineIncSw.vim'
     " Plug 'SirVer/ultisnips'
+    " Plug 'honza/vim-snippets'
 
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
@@ -424,7 +428,7 @@ nnoremap <Leader>fu :CtrlPFunky<Cr>
 nnoremap <C-f> :CtrlPFunky<Cr>
 " narrow the list down with a word under cursor
 nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
-nnoremap <C-d> :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+" nnoremap <C-d> :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
 
 "-------------------------------------------------------------------------------
 " Ack settings
@@ -440,7 +444,7 @@ nnoremap <Leader>a :Ack!<CR>
 "-------------------------------------------------------------------------------
 " Fzf settings
 "-------------------------------------------------------------------------------
-nnoremap <Leader>ss :Ag<CR>
+" nnoremap <Leader>ss :Ag<CR>
 
 "-------------------------------------------------------------------------------
 " EasyAlign settings
@@ -506,7 +510,7 @@ map  <leader>e <Plug>(easymotion-bd-w)
 nmap <leader>e <Plug>(easymotion-overwin-w)
 
 "-------------------------------------------------------------------------------
-" Tabwins settings
+" WindowSwap settings
 "-------------------------------------------------------------------------------
 
 "prevent default bindings
@@ -568,18 +572,29 @@ set directory=~/.vim/swap//
 nmap <A-o> o<ESC>
 nmap <A-O> O<ESC>
 
+nmap <leader>o o<ESC>
+nmap <leader>O O<ESC>
+
 " Next/Prev location (Error/Warnings list)
 " noremap <C-]> :lnext<CR>
 " noremap <C-]> :lprev<CR>
 
-noremap <C-]> :cnext<CR>
-noremap <C-]> :cprev<CR>
+noremap <silent> <C-]> :cnext<CR>
+noremap <silent> <C-[> :cprev<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
+
+inoremap <C-j> <C-w>j
+inoremap <C-k> <C-w>k
+inoremap <C-h> <C-w>h
+inoremap <C-l> <C-w>l
+
+" Home row ESC
+inoremap jk <Esc>
 
 " Quicker split
 nnoremap <silent><C-v> :vsp<CR>
@@ -596,6 +611,9 @@ nnoremap <localleader>sv :source $MYVIMRC<CR>
 
 " Fix ^M file endings
 nnoremap <localleader>ff :%s/\r//g<CR>:w<CR>
+
+" Convert word to uppercase
+inoremap <C-U> <Esc>viwUea
 
 " Todo/Fixme list
 command Todo :Ack! TODO\|FIXME

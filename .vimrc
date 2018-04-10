@@ -36,7 +36,9 @@ let localleader = "\\"
 
 "map <Space> <leader>
 map <Leader>ww :update<CR>
-map <Leader>q :qall<CR>
+map <silent><C-q> :Bdelete<CR>
+map <silent><Leader>q :q<CR>
+map <Leader>qa :qall<CR>
 " map <Leader>gs :Gstatus<CR>
 
 "-------------------------------------------------------------------------------
@@ -68,7 +70,7 @@ call plug#begin('~/.vim/bundle')
     " Tab autocompletion
     Plug 'Valloric/YouCompleteMe'
     " Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
-    "Plug 'ervandew/supertab'
+    " Plug 'ervandew/supertab'
 
     "Plug 'vim-syntastic/syntastic'
     Plug 'matze/vim-move' 
@@ -86,9 +88,13 @@ call plug#begin('~/.vim/bundle')
     Plug 'tomasr/molokai'
     Plug 'airblade/vim-rooter'
     " Plug 'w0rp/ale'
+
+    " Window management
     Plug 'jeffkreeftmeijer/vim-numbertoggle'
-    "Plug 'wesQ3/vim-windowswap'
+    Plug 'wesQ3/vim-windowswap'
     Plug 'cesheridan/tabwins'
+    Plug 'moll/vim-bbye'
+    " Plug 'romainl/vim-qf'
 
     " File system navigation
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -101,33 +107,47 @@ call plug#begin('~/.vim/bundle')
     " Document navigation
     Plug 'easymotion/vim-easymotion'
 
-    " Fuzzy search
+    " Search enhancments
     Plug 'mileszs/ack.vim'
-    Plug '/usr/local/opt/fzf'
-    Plug 'junegunn/fzf.vim'
+    " Plug '/usr/local/opt/fzf'
+    " Plug 'junegunn/fzf.vim'
     " Plug 'haya14busa/incsearch.vim'
     " Plug 'haya14busa/incsearch-easymotion.vim'
+    " Plug 'junegunn/vim-slash'
 
-    "Plug 'ericcurtin/CurtineIncSw.vim'
-    "Plug 'SirVer/ultisnips'
+    " Plug 'tmhedberg/matchit'
+
+    " Plug 'ericcurtin/CurtineIncSw.vim'
+    " Plug 'SirVer/ultisnips'
 
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
-    "Plug 'tpope/vim-eunuch'
-    "Plug 'tpope/vim-sensible'
-    "Plug 'tpope/vim-unimpaired'
+    " Plug 'tpope/vim-eunuch'
+    " Plug 'tpope/vim-sensible'
+    " Plug 'tpope/vim-unimpaired'
     " Plug 'wikitopian/hardmode'
 
-    " Syntax highlighting
+    " Additonal file formats
 	Plug 'elzr/vim-json'
     Plug 'nessss/vim-gml'
-    "Plug 'pangloss/vim-javascript'
-    "Plug 'plasticboy/vim-markdown'
+    " Plug 'pangloss/vim-javascript'
+    " Plug 'chrisbra/csv.vim'
+    
+    " Markdown
+    " Plug 'godlygeek/tabular'
+    " Plug 'plasticboy/vim-markdown'
+
+    " Uml diagram editing
+    " Plug 'aklt/plantuml-syntax'
+    " Plug 'scrooloose/vim-slumlord'
+
+    " Outline documents
+    " Plug 'jceb/vim-orgmodeu'
 	
 	" Git
-    "Plug 'tpope/vim-fugitive'
-    "Plug 'gregsexton/gitv', {'on': ['Gitv']}
-    "Plug 'airblade/vim-gitgutter'
+    " Plug 'tpope/vim-fugitive'
+    " Plug 'gregsexton/gitv', {'on': ['Gitv']}
+    " Plug 'airblade/vim-gitgutter'
 call plug#end()
 
 "-------------------------------------------------------------------------------
@@ -190,6 +210,8 @@ set showtabline=2
 set scrolloff=5                 " Leave 5 lines of buffer when scrolling
 "set sidescrolloff=10            " Leave 10 characters of horizontal buffer when scrolling
 
+" set shortmess=atI               " 
+
 " Update term title but restore old title after leaving Vim
 set title
 set titleold=
@@ -224,7 +246,7 @@ set hlsearch                    " Highlight search results
 nnoremap <leader>/ :nohlsearch<CR>
 
 " Clear last search
-nnoremap <leader>// /oifowfjfjowejfowfjowfjowjfowif<CR>
+nnoremap <leader>// :let @/ = ""<CR>
 
 "-------------------------------------------------------------------------------
 " Whitespace
@@ -269,6 +291,11 @@ set timeoutlen=1000              " Set leader timeout default 1000
 "set formatoptions+=r		    " Auto close comments
 "set textwidth=80				" Wrap lines at 80 chars
 "set relativenumber             " Show cursor relative line numbers
+
+" set confirm " Display a confirmation dialog when closing an unsaved file
+" set hidden  " Hide files in the background instead of closing them
+
+
 " intelligent comments
 "set comments=sl:/*,mb:\ *,elx:\ */
 
@@ -366,12 +393,14 @@ let g:ctrlp_working_path_mode = 0
 let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
 " let g:ctrlp_match_window = 'bottom,order:ttb'
 " let g:ctrlp_switch_buffer = 0
-
 "let g:ctrlp_root_markers = ['Makefile', '.git']
 
 if (g:ctrlp_use_ag_command)
     " Use ag over grep
     set grepprg=ag\ --nogroup\ --nocolor
+
+    " Allow root ignore plugin to setup ag
+    " let g:RootIgnoreAgignore = 1
 
     " let g:ctrlp_user_command = 'ag %s --files-with-matches -g "" --ignore "\.git$\|\.hg$\|\.svn$"'
     let g:ctrlp_user_command = 'ag %s --files-with-matches --nocolor -g "" --ignore "\.git$\|\.hg$\|\.svn$" --ignore "\node_modules$"'
@@ -392,8 +421,10 @@ set wildignore+=*.tpak
 " Ctrlp funky settings
 "-------------------------------------------------------------------------------
 nnoremap <Leader>fu :CtrlPFunky<Cr>
+nnoremap <C-f> :CtrlPFunky<Cr>
 " narrow the list down with a word under cursor
 nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+nnoremap <C-d> :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
 
 "-------------------------------------------------------------------------------
 " Ack settings
@@ -405,6 +436,11 @@ endif
 cnoreabbrev Ack Ack!
 nnoremap <Leader>aa :Ack!<Space>
 nnoremap <Leader>a :Ack!<CR>
+
+"-------------------------------------------------------------------------------
+" Fzf settings
+"-------------------------------------------------------------------------------
+nnoremap <Leader>ss :Ag<CR>
 
 "-------------------------------------------------------------------------------
 " EasyAlign settings
@@ -473,6 +509,17 @@ nmap <leader>e <Plug>(easymotion-overwin-w)
 " Tabwins settings
 "-------------------------------------------------------------------------------
 
+"prevent default bindings
+let g:windowswap_map_keys = 0 
+
+nnoremap <silent> <leader>yw :call WindowSwap#MarkWindowSwap()<CR>
+nnoremap <silent> <leader>pw :call WindowSwap#DoWindowSwap()<CR>
+nnoremap <silent> <leader>ww :call WindowSwap#EasyWindowSwap()<CR>
+
+"-------------------------------------------------------------------------------
+" Tabwins settings
+"-------------------------------------------------------------------------------
+
 " Disable 'Tabwins' menu
 let g:load_tabwins_menu_is_wanted = 'N'
 
@@ -522,14 +569,22 @@ nmap <A-o> o<ESC>
 nmap <A-O> O<ESC>
 
 " Next/Prev location (Error/Warnings list)
-noremap <leader>] :lnext<CR>
-noremap <leader>[ :lprev<CR>
+" noremap <C-]> :lnext<CR>
+" noremap <C-]> :lprev<CR>
+
+noremap <C-]> :cnext<CR>
+noremap <C-]> :cprev<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
+
+" Quicker split
+nnoremap <silent><C-v> :vsp<CR>
+nnoremap <silent><C-s> :sp<CR>
+nnoremap <silent><C-c> :hide<CR>
 
 " Save session
 nnoremap <localleader>s :mksession!<CR>
@@ -540,7 +595,11 @@ nnoremap <localleader>ez :edit ~/.zshrc<CR>
 nnoremap <localleader>sv :source $MYVIMRC<CR>
 
 " Fix ^M file endings
-noremap <localleader>ff :%s/\r//g<CR>:w<CR>
+nnoremap <localleader>ff :%s/\r//g<CR>:w<CR>
+
+" Todo/Fixme list
+command Todo :Ack! TODO\|FIXME
+nnoremap <leader>tt :Todo<CR>
 
 "-------------------------------------------------------------------------------
 " Ale settings
